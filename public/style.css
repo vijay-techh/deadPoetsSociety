@@ -14,140 +14,63 @@ body {
   padding: 20px;
 }
 
-/* ===== SIDEBAR DESKTOP ===== */
-.sidebar {
-  width: 200px;
-  height: 100vh;
-  background: #0f172a;
-  position: fixed;
-  left: 0;
-  top: 0;
-  padding: 20px;
-}
 
-.sidebar h2 {
-  color: #fff;
-  margin-bottom: 18px;
-  font-size: 20px;
-}
 
-.sidebar a {
-  color: #93c5fd;
-  text-decoration: none;
-  display: block;
-  margin: 10px 0;
-}
-
-.sidebar a:hover {
-  color: #fff;
-}
-
-/* Desktop content shift */
-.page-content {
-  margin-left: 220px;
-}
-
-/* ===== MOBILE RESPONSIVE SIDEBAR ===== */
-@media (max-width: 700px) {
-  .sidebar {
-    position: fixed;
-    width: 100%;
-    height: auto;
-    padding: 14px;
-    display: flex;
-    justify-content: space-around;
-    top: 0;
-    left: 0;
-    z-index: 99;
-  }
-
-  .sidebar h2 {
-    display: none;
-  }
-
-  .sidebar a {
-    margin: 0;
-    font-size: 14px;
-  }
-
-  .page-content {
-    margin-left: 0;
-    margin-top: 60px;
-  }
-}
-/* ===== Bottom Instagram-style nav (mobile) ===== */
+/* ===== Bottom Insta-like Nav (Always Visible) ===== */
 .bottom-nav {
   position: fixed;
-  bottom: 10px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  width: calc(100% - 40px);
-  max-width: 760px;
-  height: 62px;
-  background: rgba(17,17,17,0.98);
-  border-radius: 999px;
+  width: 100%;
+  max-width: 780px;
+  height: 70px;
+  background: rgba(15, 23, 42, 0.92);
+  border-radius: 40px;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
-  z-index: 1200;
-  padding: 8px 12px;
-  backdrop-filter: blur(6px);
+  padding: 10px 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  z-index: 9999;
+  backdrop-filter: blur(8px);
 }
 
-/* each button */
+/* Nav item */
 .bottom-nav .nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  gap: 2px;
-  color: #cbd5e1;
+  color: #d1d5db;
   text-decoration: none;
-  font-size: 11px;
-  line-height: 1;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
 }
 
 .bottom-nav .nav-item svg {
-  width: 22px;
-  height: 22px;
-  display: block;
-  fill: none;
+  width: 26px;
+  height: 26px;
   stroke: currentColor;
-  stroke-width: 1.8;
 }
 
-/* active state */
+/* Active item */
 .bottom-nav .nav-item.active {
   color: #ff8a3d;
-  transform: translateY(-2px);
 }
 
-/* create button special */
+/* Create button */
 .bottom-nav .nav-item.create {
-  background: linear-gradient(45deg,#ff6b00,#ffbd59);
-  width: 54px;
-  height: 54px;
+  background: linear-gradient(45deg, #ff6b00, #ffbd59);
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   color: #111;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 18px rgba(255,107,0,0.18);
-  font-weight: 700;
-}
-
-/* small badge for activity */
-.bottom-nav .badge {
-  position: absolute;
-  top: 6px;
-  right: 12px;
-  background: #ef4444;
-  color: #fff;
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 999px;
+  margin-top: -25px;
+  box-shadow: 0 8px 25px rgba(255,107,0,0.35);
 }
 
 /* hide on wider screens (desktop) */
