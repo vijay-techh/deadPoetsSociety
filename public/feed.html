@@ -4,69 +4,135 @@
 <meta charset="UTF-8">
 <title>Poetry Feed</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="style.css">
+
 <style>
-  body { font-family: serif; background: #0b1726; color: #fff; padding:20px; }
-  .poem { background:#111827; padding:20px; margin-bottom:15px; border-radius:10px; }
-  .poem small { opacity:0.7; }
-  .btn { background:#f97316; color:#111; padding:6px 10px; border-radius:6px; border:none; cursor:pointer; }
-  .filters { margin-bottom:20px; display:flex; gap:10px; }
-  input, select { padding:8px; border-radius:6px; border:1px solid #555; }
+  body {
+    background: #f78c00;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    color: #fff;
+  }
+
+  .feed {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .post {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 0 20px rgba(217, 4, 4, 0.3);
+  }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    background: #444;
+    border-radius: 50%;
+    margin-right: 12px;
+  }
+
+  .author {
+    font-weight: 700;
+    font-size: 15px;
+  }
+
+  .time {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+
+  .post-content {
+    margin: 14px 0;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    font-size: 17px;
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 12px;
+  }
+
+  .btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #e4e4e4;
+    transition: 0.2s;
+  }
+  .btn:hover {
+    color: #f97316;
+  }
 </style>
 </head>
 <body>
 
-<h1>Poetry Feed</h1>
-
-<div class="filters">
-  <input id="search" placeholder="Search poems, tags, words..." />
-  <select id="sort">
-    <option value="newest">Newest</option>
-    <option value="oldest">Oldest</option>
-  </select>
-  <button onclick="loadPoems()">Search</button>
-</div>
-
-<div id="list"></div>
+<div class="feed" id="feed"></div>
 
 <script>
-async function loadPoems() {
-  const search = document.getElementById("search").value;
-  const sort = document.getElementById("sort").value;
-
-  const res = await fetch(`/api/poems?search=${search}&sort=${sort}`);
+async function loadFeed() {
+  const res = await fetch("/api/poems");
   const data = await res.json();
 
-  const list = document.getElementById("list");
-  list.innerHTML = "";
+  const feed = document.getElementById("feed");
+  feed.innerHTML = "";
 
   data.poems.forEach(poem => {
     const div = document.createElement("div");
-    div.className = "poem";
+    div.className = "post";
 
     div.innerHTML = `
-      <h2>${poem.title}</h2>
-      <p>${poem.content.replace(/\n/g, "<br>")}</p>
-      <small>By: ${poem.author} | Tags: ${poem.tags ?? "None"}</small><br><br>
-      <button class="btn" onclick="favorite(${poem.id})">❤️ Save</button>
-      <button class="btn" onclick="deletePoem(${poem.id})">🗑 Delete</button>
+      <div class="post-header">
+        <div class="avatar"></div>
+        <div>
+          <div class="author">${poem.author}</div>
+          <div class="time">${new Date(poem.created_at).toLocaleString()}</div>
+        </div>
+      </div>
+
+      <div class="post-content">${poem.content}</div>
+
+      <div class="actions">
+        <button class="btn" onclick="like(${poem.id})">❤️</button>
+        <button class="btn" onclick="save(${poem.id})">🔖</button>
+        <button class="btn" onclick="deletePost(${poem.id})">🗑</button>
+      </div>
     `;
 
-    list.appendChild(div);
+    feed.appendChild(div);
   });
 }
 
-loadPoems();
+async function like(id) {
+  alert("Like feature coming...");
+}
 
-async function favorite(id) {
-  await fetch(`/api/favorites/${id}`, { method:"POST" });
+async function save(id) {
   alert("Saved!");
 }
 
-async function deletePoem(id) {
-  if (!confirm("Delete poem permanently?")) return;
-  await fetch(`/api/poems/${id}`, { method:"DELETE", credentials:"include" });
-  loadPoems();
+async function deletePost(id) {
+  if (!confirm("Delete this poem?")) return;
+  await fetch(`/api/poems/${id}`, { method: "DELETE", credentials: "include" });
+  loadFeed();
 }
+
+loadFeed();
 </script>
+
 </body>
 </html>

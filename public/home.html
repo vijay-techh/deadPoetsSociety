@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <title>Poets Home</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="style.css">
+
   <style>
     .write-btn {
   position: fixed;
@@ -72,6 +74,23 @@ border-radius:6px; color:#111; text-decoration:none; font-weight:bold;">
   <a href="feed.html">📚 Explore</a>
   <a href="login.html" onclick="logout()">🚪 Logout</a>
 </div>
+  <h2 style="margin-top:20px;">📚 Explore Poems</h2>
+  <div id="explorePreview"></div>
+
+  <button onclick="window.location.href='feed.html'" 
+  style="
+  background:#f97316;
+  padding:10px 18px;
+  border:none;
+  border-radius:8px;
+  color:#111;
+  margin-top:15px;
+  font-weight:bold;
+  cursor:pointer;
+">
+      See All Poems →
+</button>
+
 
   <script>
     const name = localStorage.getItem('poetUserName') || 'Poet';

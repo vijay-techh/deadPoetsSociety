@@ -1,0 +1,77 @@
+/* ===== GLOBAL RESET ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Body base styles */
+body {
+  background: #0b1726;
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+/* ===== SIDEBAR DESKTOP ===== */
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  background: #0f172a;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  color: #fff;
+  margin-bottom: 18px;
+  font-size: 20px;
+}
+
+.sidebar a {
+  color: #93c5fd;
+  text-decoration: none;
+  display: block;
+  margin: 10px 0;
+}
+
+.sidebar a:hover {
+  color: #fff;
+}
+
+/* Desktop content shift */
+.page-content {
+  margin-left: 220px;
+}
+
+/* ===== MOBILE RESPONSIVE SIDEBAR ===== */
+@media (max-width: 700px) {
+  .sidebar {
+    position: fixed;
+    width: 100%;
+    height: auto;
+    padding: 14px;
+    display: flex;
+    justify-content: space-around;
+    top: 0;
+    left: 0;
+    z-index: 99;
+  }
+
+  .sidebar h2 {
+    display: none;
+  }
+
+  .sidebar a {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  .page-content {
+    margin-left: 0;
+    margin-top: 60px;
+  }
+}
