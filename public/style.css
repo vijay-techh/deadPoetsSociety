@@ -73,10 +73,6 @@ body {
   box-shadow: 0 8px 25px rgba(255,107,0,0.35);
 }
 
-/* hide on wider screens (desktop) */
-@media (min-width: 769px) {
-  .bottom-nav { display: none; }
-}
 
 /* accessible focus state */
 .bottom-nav .nav-item:focus {
