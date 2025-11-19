@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Write a Poem</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body { background:#0b1726; color:#fff; font-family:serif; padding:30px; }
+  h1 { margin-top:0; font-size:28px; }
+  input, textarea {
+    width:100%; background:#111; color:#fff; border:1px solid #444;
+    padding:10px; border-radius:6px; margin-bottom:12px;
+  }
+  button {
+    padding:10px 15px; border:none; background:#f97316; 
+    color:#111; font-weight:bold; border-radius:8px; cursor:pointer;
+  }
+  .sidebar {
+  width: 200px;
+  height: 100vh;
+  background: #0f172a;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px;
+}
+.sidebar h2 {
+  color: #fff;
+  margin-bottom: 20px;
+}
+.sidebar a {
+  display: block;
+  color: #93c5fd;
+  margin: 10px 0;
+  text-decoration: none;
+}
+.sidebar a:hover {
+  color: #fff;
+}
+body {
+  margin-left: 220px; /* Give space for sidebar */
+}
+
+</style>
+</head>
+<body>
+
+<h1>Write Your Poem</h1>
+<p>"Let your ink speak where your voice cannot."</p>
+<p>“We don’t write to be liked… we write because our souls cannot stay silent.” ✒️🔥</p>
+
+<form id="poemForm">
+  <input type="text" name="title" placeholder="Poem Title" required>
+  <textarea name="content" rows="10" placeholder="Write your poem here..." required></textarea>
+  <button type="submit">Publish</button>
+</form>
+
+<p id="msg"></p>
+    <div class="sidebar">
+  <h2>Poets</h2>
+  <a href="home.html">🏠 Home</a>
+  <a href="write.html">✒️ Write</a>
+  <a href="feed.html">📚 Explore</a>
+  <a href="login.html" onclick="logout()">🚪 Logout</a>
+</div>
+
+<script>
+document.getElementById("poemForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  const payload = {
+    title: formData.get("title").trim(),
+    content: formData.get("content").trim()
+  };
+
+  const res = await fetch("/api/poems/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload)
+  });
+
+  const data = await res.json();
+  const msg = document.getElementById("msg");
+
+  if (data.success) {
+    msg.textContent = "Poem published!";
+    e.target.reset();
+  } else {
+    msg.textContent = data.message;
+  }
+});
+</script>
+<script>
+function logout() {
+  fetch("/api/logout", { method: "POST", credentials: "include" })
+    .then(() => window.location.href = "login.html");
+}
+</script>
+
+</body>
+</html>

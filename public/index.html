@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dead Poets — Login</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0b1726;
+      color: #fdfdfd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #111827;
+      padding: 24px 28px;
+      border-radius: 14px;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+    h1 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+    p {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #f9fafb;
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      background: #f97316;
+      color: #111827;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .link {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .link a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+    .error {
+      color: #fca5a5;
+      font-size: 13px;
+      margin-bottom: 8px;
+      min-height: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Welcome, Poet</h1>
+    <p>Enter the society through words and whispers.</p>
+
+    <div id="error" class="error"></div>
+
+    <form id="loginForm">
+      <label>Email</label>
+      <input type="email" name="email" required />
+
+      <label>Password</label>
+      <input type="password" name="password" required />
+
+      <button type="submit" id="loginBtn">Enter</button>
+    </form>
+
+    <div class="link">
+      New here? <a href="signup.html">Create your poet account</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const btn = document.getElementById('loginBtn');
+    const errorBox = document.getElementById('error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Entering...';
+
+      const formData = new FormData(form);
+      const payload = {
+        email: formData.get('email').trim(),
+        password: formData.get('password').trim()
+      };
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!data.success) {
+          throw new Error(data.message || 'Login failed.');
+        }
+
+        // Save basic info (for now, just role)
+        localStorage.setItem('poetUserRole', data.user.role || 'user');
+        localStorage.setItem('poetUserName', data.user.name || '');
+
+        // 🔑 Method 4: Same login, different redirect
+        if (data.user.role === 'admin') {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'home.html';
+        }
+      } catch (err) {
+        console.error(err);
+        errorBox.textContent = err.message;
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Enter';
+      }
+    });
+  </script>
+</body>
+</html>

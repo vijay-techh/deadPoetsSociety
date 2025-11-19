@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Poetry Feed</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body { font-family: serif; background: #0b1726; color: #fff; padding:20px; }
+  .poem { background:#111827; padding:20px; margin-bottom:15px; border-radius:10px; }
+  .poem small { opacity:0.7; }
+  .btn { background:#f97316; color:#111; padding:6px 10px; border-radius:6px; border:none; cursor:pointer; }
+  .filters { margin-bottom:20px; display:flex; gap:10px; }
+  input, select { padding:8px; border-radius:6px; border:1px solid #555; }
+</style>
+</head>
+<body>
+
+<h1>Poetry Feed</h1>
+
+<div class="filters">
+  <input id="search" placeholder="Search poems, tags, words..." />
+  <select id="sort">
+    <option value="newest">Newest</option>
+    <option value="oldest">Oldest</option>
+  </select>
+  <button onclick="loadPoems()">Search</button>
+</div>
+
+<div id="list"></div>
+
+<script>
+async function loadPoems() {
+  const search = document.getElementById("search").value;
+  const sort = document.getElementById("sort").value;
+
+  const res = await fetch(`/api/poems?search=${search}&sort=${sort}`);
+  const data = await res.json();
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.poems.forEach(poem => {
+    const div = document.createElement("div");
+    div.className = "poem";
+
+    div.innerHTML = `
+      <h2>${poem.title}</h2>
+      <p>${poem.content.replace(/\n/g, "<br>")}</p>
+      <small>By: ${poem.author} | Tags: ${poem.tags ?? "None"}</small><br><br>
+      <button class="btn" onclick="favorite(${poem.id})">❤️ Save</button>
+      <button class="btn" onclick="deletePoem(${poem.id})">🗑 Delete</button>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+loadPoems();
+
+async function favorite(id) {
+  await fetch(`/api/favorites/${id}`, { method:"POST" });
+  alert("Saved!");
+}
+
+async function deletePoem(id) {
+  if (!confirm("Delete poem permanently?")) return;
+  await fetch(`/api/poems/${id}`, { method:"DELETE", credentials:"include" });
+  loadPoems();
+}
+</script>
+</body>
+</html>
