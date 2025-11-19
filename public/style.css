@@ -75,3 +75,89 @@ body {
     margin-top: 60px;
   }
 }
+/* ===== Bottom Instagram-style nav (mobile) ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 760px;
+  height: 62px;
+  background: rgba(17,17,17,0.98);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  z-index: 1200;
+  padding: 8px 12px;
+  backdrop-filter: blur(6px);
+}
+
+/* each button */
+.bottom-nav .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  gap: 2px;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 11px;
+  line-height: 1;
+}
+
+.bottom-nav .nav-item svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+/* active state */
+.bottom-nav .nav-item.active {
+  color: #ff8a3d;
+  transform: translateY(-2px);
+}
+
+/* create button special */
+.bottom-nav .nav-item.create {
+  background: linear-gradient(45deg,#ff6b00,#ffbd59);
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  color: #111;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(255,107,0,0.18);
+  font-weight: 700;
+}
+
+/* small badge for activity */
+.bottom-nav .badge {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 999px;
+}
+
+/* hide on wider screens (desktop) */
+@media (min-width: 769px) {
+  .bottom-nav { display: none; }
+}
+
+/* accessible focus state */
+.bottom-nav .nav-item:focus {
+  outline: 3px solid rgba(255,139,61,0.16);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
