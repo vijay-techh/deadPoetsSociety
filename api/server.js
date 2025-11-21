@@ -291,8 +291,15 @@ app.post("/api/logout", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public", "index.html"));
+  const filePath = path.join(__dirname, "../public", req.path);
+
+  res.sendFile(filePath, err => {
+    if (err) {
+      res.sendFile(path.join(__dirname, "../public", "index.html"));
+    }
+  });
 });
+
 
 
 // START SERVER
