@@ -1,199 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Poets Home</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="style.css">
-
-  <style>
-    .write-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #f97316;
-  color: #111;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  text-decoration: none;
-  font-weight: bold;
-  box-shadow: 0px 4px 15px rgba(0,0,0,0.4);
-}
-.write-btn:hover {
-  background: #fb923c;
-}
-  </style>
+<title>Home</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body style="font-family: system-ui; background:#b70d0d; color:#f9fafb; margin:0; padding:24px;">
-  <center>
-    <h1 id="greeting">Welcome, Poet.</h1>
-  <p>This is the common hall where all writers gather.</p>
-  </center>
+<body>
 
+<div class="main">
+  <h2>📖 Home Feed</h2>
+  <div id="feed"></div>
+</div>
 
-
-
-<h2 style="margin-bottom: 15px;">📖 Latest Poems</h2>
-
-<div id="homeFeed"></div>
+<include-bottom-nav></include-bottom-nav>
 
 <script>
-async function loadHomeFeed() {
-  const res = await fetch("/api/poems?sort=newest");
+async function loadFeed(){
+  const res = await fetch("/api/poems");
   const data = await res.json();
 
-  const feed = document.getElementById("homeFeed");
+  const feed = document.getElementById("feed");
   feed.innerHTML = "";
 
-  data.poems.forEach(poem => {
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-        <div style="width:40px;height:40px;border-radius:50%;background:#333;"></div>
-        <div>
-          <div style="font-weight:bold;">${poem.author}</div>
-          <div style="opacity:0.6;font-size:12px;">
-            ${new Date(poem.created_at).toLocaleString()}
-          </div>
-        </div>
-      </div>
-
-      <div style="white-space:pre-wrap;margin:12px 0;font-size:16px;">
-        ${poem.content}
-      </div>
-
-      <div style="display:flex;justify-content:space-between;margin-top:10px;">
-        <button class="btn" style="width:auto;background:none;color:#ff4d67;font-size:20px;">❤️</button>
-        <button class="btn" onclick="deletePoem(${poem.id})" style="width:auto;background:none;color:#ccc;font-size:20px;">🗑</button>
+  data.poems.forEach(p => {
+    feed.innerHTML += `
+      <div class="card">
+        <b>${p.author}</b><br><br>
+        ${p.content}<br><br>
+        <button onclick="deletePoem(${p.id})">🗑</button>
       </div>
     `;
-
-    feed.appendChild(card);
   });
 }
 
-async function deletePoem(id) {
-  if (!confirm("Delete this poem?")) return;
-
-  await fetch(`/api/poems/${id}`, {
-    method: "DELETE",
-    credentials: "include"
+async function deletePoem(id){
+  await fetch("/api/poems/"+id,{
+    method:"DELETE",
+    credentials:"include"
   });
-
-  loadHomeFeed();
+  loadFeed();
 }
 
-loadHomeFeed();
+loadFeed();
 </script>
-
-
-  <script>
-    const name = localStorage.getItem('poetUserName') || 'Poet';
-    document.getElementById('greeting').textContent = `Welcome, ${name}.`;
-  </script>
-  <script>
-function logout() {
-  fetch("/api/logout", { method: "POST", credentials: "include" })
-    .then(() => window.location.href = "login.html");
-}
-</script>
-<!-- Bottom Nav -->
-<nav class="bottom-nav" aria-label="Primary">
-  <a class="nav-item" data-nav="home" href="home.html" title="Home">
-    <!-- Home icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/></svg>
-    <span>Home</span>
-  </a>
-
-  <a class="nav-item" data-nav="explore" href="feed.html" title="Explore">
-    <!-- Explore/search icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35"/><circle cx="11" cy="11" r="6"/></svg>
-    <span>Explore</span>
-  </a>
-
-  <a class="nav-item create" data-nav="create" href="write.html" title="Write">
-    <!-- Plus icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-  </a>
-
-  <a class="nav-item" data-nav="activity" href="feed.html?tab=activity" title="Activity">
-    <!-- Activity / heart icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 7.6a4.4 4.4 0 0 0-6.2 0L12 10.2l-2.6-2.6a4.4 4.4 0 0 0-6.2 6.2L12 21l8.8-7.2a4.4 4.4 0 0 0 0-6.2z"/></svg>
-    <span>Activity</span>
-    <span class="badge" id="navBadge" style="display:none">0</span>
-  </a>
-
-  <a class="nav-item" data-nav="profile" href="admin.html" title="Profile">
-    <!-- Profile icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0"/></svg>
-    <span>Profile</span>
-  </a>
-</nav>
-<!-- End Bottom Nav -->
-<script>
-(function(){
-  // mark active nav item based on URL
-  const path = window.location.pathname.split("/").pop().split("?")[0] || "index.html";
-  const map = {
-    "": "home",
-    "index.html": "home",
-    "home.html": "home",
-    "feed.html": "explore",
-    "write.html": "create",
-    "admin.html": "profile",
-    "profile.html": "profile"
-  };
-
-  // if there's a query ?tab=activity
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("tab") === "activity") {
-    setActive("activity");
-  } else {
-    setActive(map[path] || "home");
-  }
-
-  function setActive(name) {
-    document.querySelectorAll(".bottom-nav .nav-item").forEach(el => el.classList.remove("active"));
-    const el = document.querySelector(`.bottom-nav .nav-item[data-nav="${name}"]`);
-    if (el) el.classList.add("active");
-  }
-
-  // Optional: fetch notifications count for badge (requires /api/notifications or similar)
-  async function loadBadge() {
-    try {
-      const res = await fetch("/api/notifications/count", { credentials: "include" });
-      if (!res.ok) return;
-      const j = await res.json();
-      if (j.count && j.count > 0) {
-        const b = document.getElementById("navBadge");
-        b.textContent = j.count > 99 ? "99+" : j.count;
-        b.style.display = "inline-block";
-      }
-    } catch (e) {
-      // silent
-    }
-  }
-
-  // call it (if you implement notifications)
-  loadBadge();
-
-  // Accessibility: keyboard navigation
-  document.querySelectorAll(".bottom-nav .nav-item").forEach(item => {
-    item.setAttribute("tabindex", "0");
-    item.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") item.click();
-    });
-  });
-
-})();
-</script>
-
+<script src="nav.js"></script>
 </body>
 </html>

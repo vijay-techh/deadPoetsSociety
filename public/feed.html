@@ -1,228 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Poetry Feed</title>
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Explore</title>
 <link rel="stylesheet" href="style.css">
-
-<style>
-  body {
-    background: #f78c00;
-    font-family: 'Inter', sans-serif;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-    color: #000000;
-  }
-
-  .feed {
-    width: 100%;
-    max-width: 480px;
-  }
-
-  .post {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 16px;
-    margin-bottom: 18px;
-    box-shadow: 0 0 20px rgba(217, 4, 4, 0.3);
-  }
-
-  .post-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .avatar {
-    width: 42px;
-    height: 42px;
-    background: #ffffff;
-    border-radius: 50%;
-    margin-right: 12px;
-  }
-
-  .author {
-    font-weight: 700;
-    font-size: 15px;
-  }
-
-  .time {
-    font-size: 12px;
-    opacity: 0.6;
-  }
-
-  .post-content {
-    margin: 14px 0;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    font-size: 17px;
-  }
-
-  .actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 12px;
-  }
-
-  .btn {
-    background: none;
-    border: none;
-    font-size: 22px;
-    cursor: pointer;
-    color: #e4e4e4;
-    transition: 0.2s;
-  }
-  .btn:hover {
-    color: #f97316;
-  }
-</style>
 </head>
 <body>
 
-<div class="feed" id="feed"></div>
+<div class="main">
+  <h2>🔍 Explore Poems</h2>
+  <input id="search" placeholder="Search poems">
+  <button class="btn" onclick="search()">Search</button>
+  <div id="results"></div>
+</div>
+
+<include-bottom-nav></include-bottom-nav>
 
 <script>
-async function loadFeed() {
-  const res = await fetch("/api/poems");
+async function search(){
+  const res = await fetch("/api/poems?search="+search.value);
   const data = await res.json();
 
-  const feed = document.getElementById("feed");
-  feed.innerHTML = "";
+  const results = document.getElementById("results");
+  results.innerHTML = "";
 
-  data.poems.forEach(poem => {
-    const div = document.createElement("div");
-    div.className = "post";
-
-    div.innerHTML = `
-      <div class="post-header">
-        <div class="avatar"></div>
-        <div>
-          <div class="author">${poem.author}</div>
-          <div class="time">${new Date(poem.created_at).toLocaleString()}</div>
-        </div>
-      </div>
-
-      <div class="post-content">${poem.content}</div>
-
-      <div class="actions">
-        <button class="btn" onclick="like(${poem.id})">❤️</button>
-        <button class="btn" onclick="save(${poem.id})">🔖</button>
-        <button class="btn" onclick="deletePost(${poem.id})">🗑</button>
+  data.poems.forEach(p=>{
+    results.innerHTML += `
+      <div class="card">
+        <b>${p.author}</b><br><br>
+        ${p.content}
       </div>
     `;
-
-    feed.appendChild(div);
   });
 }
-
-async function like(id) {
-  alert("Like feature coming...");
-}
-
-async function save(id) {
-  alert("Saved!");
-}
-
-async function deletePost(id) {
-  if (!confirm("Delete this poem?")) return;
-  await fetch(`/api/poems/${id}`, { method: "DELETE", credentials: "include" });
-  loadFeed();
-}
-
-loadFeed();
+search();
 </script>
-<!-- Bottom Nav -->
-<nav class="bottom-nav" aria-label="Primary">
-  <a class="nav-item" data-nav="home" href="home.html" title="Home">
-    <!-- Home icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/></svg>
-    <span>Home</span>
-  </a>
-
-  <a class="nav-item" data-nav="explore" href="feed.html" title="Explore">
-    <!-- Explore/search icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35"/><circle cx="11" cy="11" r="6"/></svg>
-    <span>Explore</span>
-  </a>
-
-  <a class="nav-item create" data-nav="create" href="write.html" title="Write">
-    <!-- Plus icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-  </a>
-
-  <a class="nav-item" data-nav="activity" href="feed.html?tab=activity" title="Activity">
-    <!-- Activity / heart icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 7.6a4.4 4.4 0 0 0-6.2 0L12 10.2l-2.6-2.6a4.4 4.4 0 0 0-6.2 6.2L12 21l8.8-7.2a4.4 4.4 0 0 0 0-6.2z"/></svg>
-    <span>Activity</span>
-    <span class="badge" id="navBadge" style="display:none">0</span>
-  </a>
-
-  <a class="nav-item" data-nav="profile" href="admin.html" title="Profile">
-    <!-- Profile icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0"/></svg>
-    <span>Profile</span>
-  </a>
-</nav>
-<!-- End Bottom Nav -->
-<script>
-(function(){
-  // mark active nav item based on URL
-  const path = window.location.pathname.split("/").pop().split("?")[0] || "index.html";
-  const map = {
-    "": "home",
-    "index.html": "home",
-    "home.html": "home",
-    "feed.html": "explore",
-    "write.html": "create",
-    "admin.html": "profile",
-    "profile.html": "profile"
-  };
-
-  // if there's a query ?tab=activity
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("tab") === "activity") {
-    setActive("activity");
-  } else {
-    setActive(map[path] || "home");
-  }
-
-  function setActive(name) {
-    document.querySelectorAll(".bottom-nav .nav-item").forEach(el => el.classList.remove("active"));
-    const el = document.querySelector(`.bottom-nav .nav-item[data-nav="${name}"]`);
-    if (el) el.classList.add("active");
-  }
-
-  // Optional: fetch notifications count for badge (requires /api/notifications or similar)
-  async function loadBadge() {
-    try {
-      const res = await fetch("/api/notifications/count", { credentials: "include" });
-      if (!res.ok) return;
-      const j = await res.json();
-      if (j.count && j.count > 0) {
-        const b = document.getElementById("navBadge");
-        b.textContent = j.count > 99 ? "99+" : j.count;
-        b.style.display = "inline-block";
-      }
-    } catch (e) {
-      // silent
-    }
-  }
-
-  // call it (if you implement notifications)
-  loadBadge();
-
-  // Accessibility: keyboard navigation
-  document.querySelectorAll(".bottom-nav .nav-item").forEach(item => {
-    item.setAttribute("tabindex", "0");
-    item.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") item.click();
-    });
-  });
-
-})();
-</script>
-
+<script src="nav.js"></script>
 </body>
 </html>

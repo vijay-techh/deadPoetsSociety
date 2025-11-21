@@ -1,171 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title><center>Captain's Room — Admin</center></title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="style.css">
-
-  <style>
-    h1{
-      align-items: center;
-    }
-    .write-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #f97316;
-  color: #111;
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  text-decoration: none;
-  font-weight: bold;
-  box-shadow: 0px 4px 15px rgba(0,0,0,0.4);
-}
-.write-btn:hover {
-  background: #fb923c;
-}
-
-body {
-  margin-left: 220px; /* Give space for sidebar */
-}
-
-
-  </style>
+<title>Admin</title>
+<link rel="stylesheet" href="style.css">
 </head>
-<body style="font-family: system-ui; background:#020617; color:#f9fafb; margin:0; padding:54px;">
-  <center><h1 id="heading">Captain's Room</h1>
-  <p><center>Only those who lead the Dead Poets may see this.</center></p>
+<body>
 
-  <p id="roleInfo"></p>
+<div class="main">
+  <h2>⚓ Admin Panel</h2>
 
-  <button onclick="logout()">Logout</button>
-  
-  <button onclick="window.location.href='write.html'">✒️ Write a Poem</button>
-  </center>
-  <a href="write.html" class="write-btn">+</a>
-  
+  <textarea id="content" placeholder="Write poem..."></textarea>
+  <button class="btn" onclick="postPoem()">Post</button>
 
+  <h3>Your Poems</h3>
+  <div id="adminFeed"></div>
+</div>
 
-  <script>
-    const role = localStorage.getItem('poetUserRole');
-    const name = localStorage.getItem('poetUserName') || 'Captain';
+<include-bottom-nav></include-bottom-nav>
 
-    if (role !== 'admin') {
-      // If someone somehow opens admin.html directly without being admin:
-      window.location.href = 'login.html';
-    } else {
-      document.getElementById('heading').textContent = `Captain's Room — ${name}`;
-      document.getElementById('roleInfo').textContent = `You are logged in as: ${role}`;
-    }
-
-    function logout() {
-      localStorage.removeItem('poetUserRole');
-      localStorage.removeItem('poetUserName');
-      window.location.href = 'login.html';
-    }
-  </script>
-  <script>
-function logout() {
-  fetch("/api/logout", { method: "POST", credentials: "include" })
-    .then(() => window.location.href = "login.html");
-}
-</script>
-<!-- Bottom Nav -->
-<nav class="bottom-nav" aria-label="Primary">
-  <a class="nav-item" data-nav="home" href="home.html" title="Home">
-    <!-- Home icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5z"/></svg>
-    <span>Home</span>
-  </a>
-
-  <a class="nav-item" data-nav="explore" href="feed.html" title="Explore">
-    <!-- Explore/search icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-4.35-4.35"/><circle cx="11" cy="11" r="6"/></svg>
-    <span>Explore</span>
-  </a>
-
-  <a class="nav-item create" data-nav="create" href="write.html" title="Write">
-    <!-- Plus icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-  </a>
-
-  <a class="nav-item" data-nav="activity" href="feed.html?tab=activity" title="Activity">
-    <!-- Activity / heart icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 7.6a4.4 4.4 0 0 0-6.2 0L12 10.2l-2.6-2.6a4.4 4.4 0 0 0-6.2 6.2L12 21l8.8-7.2a4.4 4.4 0 0 0 0-6.2z"/></svg>
-    <span>Activity</span>
-    <span class="badge" id="navBadge" style="display:none">0</span>
-  </a>
-
-  <a class="nav-item" data-nav="profile" href="admin.html" title="Profile">
-    <!-- Profile icon -->
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 20a8 8 0 0 1 16 0"/></svg>
-    <span>Profile</span>
-  </a>
-</nav>
-<!-- End Bottom Nav -->
 <script>
-(function(){
-  // mark active nav item based on URL
-  const path = window.location.pathname.split("/").pop().split("?")[0] || "index.html";
-  const map = {
-    "": "home",
-    "index.html": "home",
-    "home.html": "home",
-    "feed.html": "explore",
-    "write.html": "create",
-    "admin.html": "profile",
-    "profile.html": "profile"
-  };
-
-  // if there's a query ?tab=activity
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get("tab") === "activity") {
-    setActive("activity");
-  } else {
-    setActive(map[path] || "home");
-  }
-
-  function setActive(name) {
-    document.querySelectorAll(".bottom-nav .nav-item").forEach(el => el.classList.remove("active"));
-    const el = document.querySelector(`.bottom-nav .nav-item[data-nav="${name}"]`);
-    if (el) el.classList.add("active");
-  }
-
-  // Optional: fetch notifications count for badge (requires /api/notifications or similar)
-  async function loadBadge() {
-    try {
-      const res = await fetch("/api/notifications/count", { credentials: "include" });
-      if (!res.ok) return;
-      const j = await res.json();
-      if (j.count && j.count > 0) {
-        const b = document.getElementById("navBadge");
-        b.textContent = j.count > 99 ? "99+" : j.count;
-        b.style.display = "inline-block";
-      }
-    } catch (e) {
-      // silent
-    }
-  }
-
-  // call it (if you implement notifications)
-  loadBadge();
-
-  // Accessibility: keyboard navigation
-  document.querySelectorAll(".bottom-nav .nav-item").forEach(item => {
-    item.setAttribute("tabindex", "0");
-    item.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") item.click();
-    });
+async function postPoem(){
+  await fetch("/api/poems/create",{
+    method:"POST",
+    credentials:"include",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ title:"", content: content.value })
   });
 
-})();
-</script>
+  content.value="";
+  load();
+}
 
+async function load(){
+  const res = await fetch("/api/poems");
+  const data = await res.json();
+  const div = document.getElementById("adminFeed");
+  div.innerHTML="";
+
+  data.poems.forEach(p=>{
+    div.innerHTML += `
+      <div class="card">
+        ${p.author}<br>
+        ${p.content}<br>
+        <button onclick="deletePoem(${p.id})">Delete</button>
+      </div>
+    `;
+  });
+}
+
+async function deletePoem(id){
+  await fetch("/api/poems/"+id,{ method:"DELETE",credentials:"include" });
+  load();
+}
+
+load();
+</script>
+<script src="nav.js"></script>
 </body>
 </html>

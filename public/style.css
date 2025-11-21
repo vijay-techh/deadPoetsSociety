@@ -1,91 +1,93 @@
-/* ===== GLOBAL RESET ===== */
-* {
-  box-sizing: border-box;
+body {
   margin: 0;
-  padding: 0;
+  font-family: Inter, system-ui, sans-serif;
+  background: #0b1220;
+  color: white;
+  padding-bottom: 100px;
 }
 
-/* Body base styles */
-body {
-  background: #0b1726;
-  color: #fff;
-  font-family: "Inter", sans-serif;
-  margin: 0;
+/* Main container */
+.main {
+  max-width: 600px;
+  margin: auto;
   padding: 20px;
 }
 
+/* Inputs */
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+  background: #111;
+  color: white;
+  font-size: 15px;
+}
 
+/* Buttons */
+.btn {
+  background: #ff8a3d;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  width: 100%;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  font-size: 15px;
+}
 
-/* ===== Bottom Insta-like Nav (Always Visible) ===== */
+/* Poem cards */
+.card {
+  background: #1f2937;
+  padding: 16px;
+  margin: 14px 0;
+  border-radius: 14px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* ===== BOTTOM NAV BAR ===== */
 .bottom-nav {
   position: fixed;
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  width: 100%;
-  max-width: 780px;
+  width: calc(100% - 40px);
+  max-width: 820px;
   height: 70px;
-  background: rgba(15, 23, 42, 0.92);
+  background: rgba(15,23,42,0.95);
   border-radius: 40px;
   display: flex;
-  align-items: center;
   justify-content: space-around;
-  padding: 10px 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  z-index: 9999;
-  backdrop-filter: blur(8px);
+  align-items: center;
+  padding: 10px;
+  z-index: 99999;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.5);
 }
 
-/* Nav item */
-.bottom-nav .nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #d1d5db;
+.bottom-nav a {
+  color: #cbd5e1;
   text-decoration: none;
   font-size: 12px;
-  cursor: pointer;
-  transition: 0.2s ease;
+  text-align: center;
 }
 
-.bottom-nav .nav-item svg {
-  width: 26px;
-  height: 26px;
-  stroke: currentColor;
-}
-
-/* Active item */
 .bottom-nav .nav-item.active {
   color: #ff8a3d;
 }
 
-/* Create button */
-.bottom-nav .nav-item.create {
-  background: linear-gradient(45deg, #ff6b00, #ffbd59);
+/* Center create button */
+.bottom-nav .create {
+  background: linear-gradient(#ff8000,#ffb84d);
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  color: #111;
+  color: black;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -25px;
-  box-shadow: 0 8px 25px rgba(255,107,0,0.35);
-}
-
-
-/* accessible focus state */
-.bottom-nav .nav-item:focus {
-  outline: 3px solid rgba(255,139,61,0.16);
-  outline-offset: 2px;
-  border-radius: 8px;
-}
-.card {
-  background: #ffffff;
-  padding: 16px;
-  margin-bottom: 16px;
-  border-radius: 14px;
-  box-shadow: 0px 0px 10px rgb(255, 255, 255);
-  color: #111;
-
+  margin-top: -30px;
+  font-size: 22px;
+  font-weight: bold;
 }
