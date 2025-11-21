@@ -53,11 +53,12 @@ function createToken(user) {
 function sendAuthCookie(res, token) {
   res.cookie("poetAuth", token, {
     httpOnly: true,
-    secure: true,                         // set secure:false for localhost if needed
-    sameSite: "strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000        // 7 days
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",   // ✅ THIS FIXES MOBILE
+    maxAge: 7 * 24 * 60 * 60 * 1000
   });
 }
+
 
 // ===== JWT MIDDLEWARE =====
 function requireAuth(req, res, next) {
