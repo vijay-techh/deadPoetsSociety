@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dead Poets — Signup</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
     body {
@@ -16,7 +15,9 @@
       justify-content: center;
       min-height: 100vh;
       margin: 0;
+      padding: 10px;
     }
+
     .signupcard {
       background: #111827;
       padding: 24px 28px;
@@ -25,22 +26,28 @@
       width: 100%;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     }
+
     h1 {
       margin-top: 0;
       margin-bottom: 10px;
-      font-size: 24px;
+      font-size: 22px;
+      text-align: center;
     }
+
     p {
       margin-top: 0;
       margin-bottom: 20px;
       font-size: 14px;
       opacity: 0.8;
+      text-align: center;
     }
+
     label {
       display: block;
       margin-bottom: 6px;
       font-size: 14px;
     }
+
     input {
       width: 100%;
       padding: 10px 12px;
@@ -50,7 +57,13 @@
       color: #f9fafb;
       margin-bottom: 14px;
       font-size: 14px;
+      outline: none;
     }
+
+    input:focus {
+      border-color: #22c55e;
+    }
+
     button {
       width: 100%;
       padding: 10px 12px;
@@ -61,57 +74,66 @@
       margin-top: 8px;
       background: #22c55e;
       color: #022c22;
+      transition: 0.2s ease;
     }
+
     button:disabled {
       opacity: 0.6;
-      cursor: default;
+      cursor: not-allowed;
     }
+
     .link {
-      margin-top: 12px;
+      margin-top: 14px;
       text-align: center;
       font-size: 13px;
     }
+
     .link a {
       color: #38bdf8;
       text-decoration: none;
     }
+
     .error {
       color: #fca5a5;
       font-size: 13px;
       margin-bottom: 8px;
       min-height: 18px;
+      text-align: center;
     }
+
     .success {
       color: #bbf7d0;
       font-size: 13px;
       margin-bottom: 8px;
       min-height: 18px;
+      text-align: center;
     }
   </style>
 </head>
+
 <body>
   <div class="signupcard">
     <h1>Join the Society</h1>
     <p>Sign up to share your words with fellow poets.</p>
 
-    <div id="msg" class="success"></div>
+    <div id="success" class="success"></div>
     <div id="error" class="error"></div>
 
     <form id="signupForm">
       <label>Name</label>
-      <input type="text" name="name" required />
+      <input type="text" name="name" required>
 
       <label>Email</label>
-      <input type="email" name="email" required />
+      <input type="email" name="email" required>
 
       <label>Password</label>
-      <input type="password" name="password" minlength="6" required />
+      <input type="password" name="password" minlength="6" required>
 
-      <button type="submit" id="signupBtn">Create account</button>
+      <button type="submit" id="signupBtn">Create Account</button>
     </form>
 
     <div class="link">
-      Already part of us? <a href="login.html">Login here</a>
+      Already part of us? <a href="/login.html">Login here</a>
     </div>
   </div>
 
@@ -119,50 +141,54 @@
     const form = document.getElementById('signupForm');
     const btn = document.getElementById('signupBtn');
     const errorBox = document.getElementById('error');
-    const msgBox = document.getElementById('msg');
+    const successBox = document.getElementById('success');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       errorBox.textContent = '';
-      msgBox.textContent = '';
+      successBox.textContent = '';
       btn.disabled = true;
       btn.textContent = 'Creating...';
 
       const formData = new FormData(form);
+
       const payload = {
-        name: formData.get('name'),
-        email: formData.get('email'),
+        name: formData.get('name').trim(),
+        email: formData.get('email').trim(),
         password: formData.get('password')
       };
 
       try {
-        const res = await fetch('/api/signup', {
+        const response = await fetch('/api/signup', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
           body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
+        const data = await response.json();
 
         if (!data.success) {
-          throw new Error(data.message || 'Signup failed.');
+          throw new Error(data.message || 'Signup failed');
         }
 
-        msgBox.textContent = 'Signup successful! Redirecting to login...';
+        successBox.textContent = "Signup successful! Redirecting...";
+        
         setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 1500);
+          window.location.href = "/login.html";
+        }, 1200);
+
       } catch (err) {
-        console.error(err);
-        errorBox.textContent = err.message;
+        console.error("Signup error:", err);
+        errorBox.textContent = err.message || "Something went wrong.";
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Create account';
+        btn.textContent = "Create Account";
       }
     });
   </script>
-
-  </a>
-</nav>
 </body>
 </html>
